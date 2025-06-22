@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Button, Form, Row, Col } from 'react-bootstrap';
 import backgroundImage from '../assets/Pages/Background.jpeg';
 
 function HomePage({ onStartGame }) {
