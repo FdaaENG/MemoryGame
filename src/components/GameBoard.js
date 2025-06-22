@@ -32,22 +32,23 @@ const fruitImages = [
   require('../assets/fruits/strawberry.jpg'),
   require('../assets/fruits/tomato.jpg'),
   require('../assets/fruits/waterMellon.jpg'),
-]
+];
 
 const sweetImages = [
-require('../assets/sweets/cake1.jpg'),
-require('../assets/sweets/cake2.jpg'),
-require('../assets/sweets/cake3.jpg'),
-require('../assets/sweets/cake4.jpg'),
-require('../assets/sweets/candy.jpg'),
-require('../assets/sweets/coffee.jpg'),
-require('../assets/sweets/cookie.jpg'),
-require('../assets/sweets/corn.jpg'),
-require('../assets/sweets/cupcake.jpg'),
-require('../assets/sweets/donut.jpg'),
-require('../assets/sweets/icecream.jpg'),
-require('../assets/sweets/suger.jpg'),
-]
+  require('../assets/sweets/cake1.jpg'),
+  require('../assets/sweets/cake2.jpg'),
+  require('../assets/sweets/cake3.jpg'),
+  require('../assets/sweets/cake4.jpg'),
+  require('../assets/sweets/candy.jpg'),
+  require('../assets/sweets/coffee.jpg'),
+  require('../assets/sweets/cookie.jpg'),
+  require('../assets/sweets/corn.jpg'),
+  require('../assets/sweets/cupcake.jpg'),
+  require('../assets/sweets/donut.jpg'),
+  require('../assets/sweets/icecream.jpg'),
+  require('../assets/sweets/suger.jpg'),
+];
+
 const themeImages = {
   animals: animalsBG,
   fruits: fruitsBG,
@@ -59,6 +60,7 @@ const themeCards = {
   fruits: fruitImages,
   sweets: sweetImages,
 };
+
 function GameBoard({ settings }) {
   const { level, theme, numCards } = settings;
   const navigate = useNavigate();
@@ -66,6 +68,7 @@ function GameBoard({ settings }) {
   const [cards, setCards] = useState([]);
   const [flipped, setFlipped] = useState([]);
   const [matched, setMatched] = useState([]);
+  const [wrongPair, setWrongPair] = useState([]);
   const [timer, setTimer] = useState(0);
   const intervalRef = useRef(null);
 
@@ -84,29 +87,33 @@ function GameBoard({ settings }) {
     if (newFlipped.length === 2) {
       const [first, second] = newFlipped;
       if (cards[first] === cards[second]) {
-        setMatched([...matched, cards[first]]);
+        setMatched((prev) => [...prev, cards[first]]);
+        setTimeout(() => setFlipped([]), 800);
+      } else {
+        setWrongPair([first, second]);
+        setTimeout(() => {
+          setFlipped([]);
+          setWrongPair([]);
+        }, 800);
       }
-
-      setTimeout(() => setFlipped([]), 800);
     }
   };
 
   useEffect(() => {
-    // Clear any previous interval
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-
-
-
-    // Start a new interval
+    if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       setTimer((prev) => prev + 1);
     }, 1000);
 
-    // Clean up when component unmounts or settings change
     return () => clearInterval(intervalRef.current);
   }, [theme, numCards]);
+
+  useEffect(() => {
+    if (matched.length === numCards / 2 && intervalRef.current) {
+      clearInterval(intervalRef.current);
+      navigate('/congrats', { state: { time: timer } });
+    }
+  }, [matched, numCards, timer, navigate]);
 
   const resetGame = () => {
     const symbols = themeCards[theme].slice(0, numCards / 2);
@@ -115,16 +122,10 @@ function GameBoard({ settings }) {
     setFlipped([]);
     setMatched([]);
     setTimer(0);
+    setWrongPair([]);
     if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => setTimer((prev) => prev + 1), 1000);
   };
-
-  useEffect(() => {
-    if (matched.length === numCards / 2 && intervalRef.current) {
-      clearInterval(intervalRef.current);
-      navigate('/congrats', { state: { time: timer } });
-    }
-  }, [matched, numCards, timer, navigate]);
 
   const getColumns = () => {
     if (numCards === 6) return 3;
@@ -139,8 +140,6 @@ function GameBoard({ settings }) {
   };
 
   return (
-
-
     <div
       style={{
         ...styles.container,
@@ -151,18 +150,18 @@ function GameBoard({ settings }) {
       }}
     >
       <div style={styles.infoBox}>
-
         <h2 style={styles.header}>Level: {level} | Theme: {theme}</h2>
         <p style={styles.timer}>Time: {timer}s</p>
         <div style={{ marginTop: '10px' }}>
           <button style={styles.button} onClick={resetGame}>Reset</button>
-          <button style={{ ...styles.button, backgroundColor: '#f76c6c' }} onClick={() => navigate('/')}><i class="bi bi-house"></i>Exit</button>
+          <button style={{ ...styles.button, backgroundColor: '#f76c6c' }} onClick={() => navigate('/')}>Exit</button>
         </div>
       </div>
 
       <div style={styles.grid(getColumns())}>
         {cards.map((card, idx) => {
           const isFlipped = flipped.includes(idx) || matched.includes(card);
+          const isWrong = wrongPair.includes(idx);
 
           return (
             <div
@@ -171,6 +170,11 @@ function GameBoard({ settings }) {
                 ...styles.card,
                 backgroundColor: isFlipped ? '#fff' : getCardBackColor(idx),
                 cursor: isFlipped ? 'default' : 'pointer',
+                boxShadow: matched.includes(card)
+                  ? '0 0 12px 4px #6dcf6d'
+                  : isWrong
+                  ? '0 0 12px 4px #f76c6c'
+                  : '0 3px 6px rgba(0,0,0,0.2)',
               }}
               onClick={() => handleCardClick(idx)}
             >
@@ -199,7 +203,6 @@ function shuffle(array) {
   }
   return copy;
 }
-
 
 const styles = {
   container: {
@@ -238,7 +241,7 @@ const styles = {
     cursor: 'pointer',
     backgroundColor: '#6dcf6d',
     color: 'white',
-    width: '100px'
+    width: '100px',
   },
   grid: (columns) => ({
     display: 'grid',
@@ -255,7 +258,6 @@ const styles = {
     justifyContent: 'center',
     fontSize: '2rem',
     borderRadius: '12px',
-    boxShadow: '0 3px 6px rgba(0,0,0,0.2)',
     userSelect: 'none',
     backgroundColor: '#fff',
   },
