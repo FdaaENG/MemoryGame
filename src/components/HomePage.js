@@ -82,17 +82,6 @@ function HomePage({ onStartGame }) {
                     Start Game
                 </button>
             </div>
-
-            <footer style={styles.footer}>
-                Designed by:&nbsp;
-                <a href="https://fdaaportfolio.netlify.app" target="_blank" rel="noopener noreferrer" style={styles.link}>
-                    Fdaa
-                </a>
-                &nbsp;&amp;&nbsp;
-                <a href="https://abdulmalekhousroum.netlify.app" target="_blank" rel="noopener noreferrer" style={styles.link}>
-                    Abdulmalek
-                </a>
-            </footer>
         </div>
     );
 }
@@ -152,20 +141,6 @@ const styles = {
         fontSize: '1rem',
         marginTop: '10px',
         fontWeight: 'bold',
-    },
-    footer: {
-        position: 'absolute',
-        bottom: '20px',
-        width: '100%',
-        textAlign: 'left',
-        fontSize: '1.2rem',
-        color: '#333',
-        fontFamily: '"Irish Grover", system-ui',
-        marginLeft:'20px'
-    },
-    link: {
-        color: '#FF6F61',
-       
     },
 };
 
