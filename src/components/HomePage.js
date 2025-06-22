@@ -7,7 +7,7 @@ function HomePage({ onStartGame }) {
     const [theme, setTheme] = useState('');
     const [errorlevel, setErrorlevel] = useState('');
     const [errortheme, setErrortheme] = useState('');
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const handleStart = () => {
         let hasError = false;
@@ -32,11 +32,11 @@ function HomePage({ onStartGame }) {
         navigate('/game');
     };
 
-
     return (
         <div style={styles.container} className="text-center">
             <h1 style={styles.title}>Memory Match for Kids</h1>
             <p style={styles.quote}>“Let’s flip, match, and have fun!”</p>
+
             <div className="row d-flex justify-content-center gap-4 my-4">
                 <div className="col-auto" style={styles.dropdownBox}>
                     <select
@@ -52,7 +52,6 @@ function HomePage({ onStartGame }) {
                         <option value="medium">🐥 Medium (4x3)</option>
                         <option value="hard">🦉 Hard (6x4)</option>
                     </select>
-
                     {errorlevel && (
                         <div style={styles.errorMessage}>{errorlevel}</div>
                     )}
@@ -72,18 +71,28 @@ function HomePage({ onStartGame }) {
                         <option value="fruits">🍎 Fruits</option>
                         <option value="sweets">🍬 Sweets</option>
                     </select>
-
                     {errortheme && (
                         <div style={styles.errorMessage}>{errortheme}</div>
                     )}
                 </div>
             </div>
+
             <div style={styles.Sbutton}>
                 <button onClick={handleStart} style={styles.startButton}>
                     Start Game
                 </button>
             </div>
 
+            <footer style={styles.footer}>
+                Designed by:&nbsp;
+                <a href="https://fdaaportfolio.netlify.app" target="_blank" rel="noopener noreferrer" style={styles.link}>
+                    Fdaa
+                </a>
+                &nbsp;&amp;&nbsp;
+                <a href="https://abdulmalekhousroum.netlify.app" target="_blank" rel="noopener noreferrer" style={styles.link}>
+                    Abdulmalek
+                </a>
+            </footer>
         </div>
     );
 }
@@ -93,6 +102,7 @@ const styles = {
         textAlign: 'center',
         paddingTop: '100px',
         minHeight: '100vh',
+        position: 'relative',
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
@@ -123,8 +133,6 @@ const styles = {
         width: '180px',
         cursor: 'pointer',
     },
-
-
     startButton: {
         fontSize: '1.5rem',
         padding: '12px 30px',
@@ -135,28 +143,30 @@ const styles = {
         cursor: 'pointer',
         fontFamily: '"Irish Grover", system-ui',
         width: '250px',
-
     },
     Sbutton: {
-        paddingTop: '20px'
+        paddingTop: '20px',
     },
-    label: {
-        fontWeight: 'bold',
-        fontSize: '1.5rem',
-        color: '#333',
-        fontFamily: '"Irish Grover", system-ui',
-    },
-    selectBox: {
-        width: '250px',
-        fontSize: '1rem',
-        padding: '8px 12px',
-        borderRadius: '10px',
-    }, errorMessage: {
+    errorMessage: {
         color: 'red',
         fontSize: '1rem',
         marginTop: '10px',
         fontWeight: 'bold',
-    }
+    },
+    footer: {
+        position: 'absolute',
+        bottom: '20px',
+        width: '100%',
+        textAlign: 'left',
+        fontSize: '1.2rem',
+        color: '#333',
+        fontFamily: '"Irish Grover", system-ui',
+        marginLeft:'20px'
+    },
+    link: {
+        color: '#FF6F61',
+       
+    },
 };
 
 export default HomePage;
